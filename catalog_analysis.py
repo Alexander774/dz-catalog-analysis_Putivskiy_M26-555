@@ -46,6 +46,25 @@ def duration_in_hours(minutes):
     return f"{hours}ч {minutes_left}м"
 
 
+def rating_tier(rating):
+    if rating >= 9:
+        return "шедевр"
+    elif rating >= 5:
+        return "хорошо" if rating >= 7 else "средне"
+    else:
+        return "слабо"
+
+
+def decade_label(year):
+    match year:
+        case _ if year > 2020:
+            return "новые"
+        case _ if 2015 <= year <= 2020:
+            return "недавние"
+        case _ :
+            return "старые"
+
+
 def main():
     print("Hello from dz-catalog-analysis-putivskiy-m26-555!")
 
