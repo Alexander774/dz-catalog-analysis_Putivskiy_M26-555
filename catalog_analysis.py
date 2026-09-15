@@ -1,9 +1,9 @@
-import math as m
-
+import math
 
 movies = [
     {"title": "The Dune Chronicles", "year": 2021, "genres": {"sci-fi", "drama"},
-     "rating": 8.6, "duration_min": 155, "actors": ["T. Chalamet", "R. Ferguson", "O. Isaac"]},
+     "rating": 8.6, "duration_min": 155, "actors": ["T. Chalamet", "R. Ferguson",
+                                                    "O. Isaac"]},
     {"title": "Kitchen Stories", "year": 2019, "genres": {"comedy", "drama"},
      "rating": 7.1, "duration_min": 98, "actors": ["A. Novak", "M. Ferguson"]},
     {"title": "silent hours", "year": 2016, "genres": {"thriller", "drama"},
@@ -36,7 +36,7 @@ def catalog_age_stats(movies, current_year=2026):
     ages = [current_year - movie["year"] for movie in movies]
     oldest = max(ages)
     newest = min(ages)
-    average = m.ceil(sum(ages) / len(ages))
+    average = math.ceil(sum(ages) / len(ages))
     return (oldest, newest, average)
 
 
@@ -68,19 +68,22 @@ def decade_label(year):
             return "старые"
 
 
-for movie in movies:
-    if "comedy" in movie["genres"]:
-        continue
-    print(movie["title"])
+def print_non_comedies(movies):
+    for movie in movies:
+        if "comedy" in movie["genres"]:
+            continue
+        print(movie["title"])
 
-i = 0
-while i < len(movies):
-    if movies[i]["rating"] > 9.0:
-        print(movies[i]["title"])
-        break
-    i += 1
-else:
-    print("Шедевров не найдено")
+
+def print_first_masterpiece(movies):
+    i = 0
+    while i < len(movies):
+        if movies[i]["rating"] > 9.0:
+            print(movies[i]["title"])
+            break
+        i += 1
+    else:
+        print("Шедевров не найдено")
 
 
 def count_long_movies(movies, threshold=120):
@@ -94,7 +97,7 @@ def count_long_movies(movies, threshold=120):
     return counter
 
 
-def normalize_title(title):
+def normalize_title(title: str):
     """Normalizes title to Title Case."""
     title_words = title.split(" ")
     cap_title_words = list()
@@ -159,7 +162,7 @@ def actor_filmography(movies):
     return actors_filmography
 
 
-above_average = {movie["title"]: movie["rating"]
+above_average = {str(movie["title"]): movie["rating"]
                  for movie in movies
                  if movie["rating"] > average_rating(movies)}
 
@@ -189,35 +192,42 @@ def iter_high_rated(movies, min_rating=8.0):
             yield movie
 
 
-for movie in iter_high_rated(movies):
-    print(format_report_line(movie))
+def print_high_rated_reports(movies):
+    for movie in iter_high_rated(movies):
+        print(format_report_line(movie))
 
-print(sum(movie["duration_min"] for movie in iter_high_rated(movies, 7.0)))
 
-for movie in movies:
-    movie["title"] = normalize_title(movie["title"])
+def print_high_rated(movies):
+    print(sum(movie["duration_min"] for movie in iter_high_rated(movies, 7.0)))
 
 
 def build_report(movies):
     """Builds a report for the movie catalog."""
-    report = '\nОТЧЁТ ПО КАТАЛОГУ\n'
+    report = 'ОТЧЁТ ПО КАТАЛОГУ\n'
     report += f'Средний рейтинг: {average_rating(movies, 1)}\n'
     report += f'Средний возраст фильмов: {catalog_age_stats(movies)[2]} лет\n\n'
 
     report += "Топ-3 фильма:\n"
-    movies_sorted = sorted(movies, key=lambda movie: movie["rating"], reverse=True)
+    movies_sorted = sorted(movies, key=lambda movie: movie["rating"],
+                           reverse=True)
     for movie in movies_sorted[:3]:
         report += f"  {format_report_line(movie)}\n"
 
     report += "Фильмов по жанрам:\n"
     genre_counts = count_by_genre(movies)
-    sorted_genres = sorted(genre_counts, key=lambda genre: genre_counts[genre], reverse=True)
+    sorted_genres = sorted(genre_counts, key=lambda genre: genre_counts[genre],
+                           reverse=True)
     for genre in sorted_genres:
         report += f"  {genre} — {genre_counts[genre]}\n"
 
     report += "Все жанры каталога: "
     report += ", ".join(sorted(all_genres(movies)))
 
-    return report
+    print(report)
 
-print(build_report(movies))
+
+for movie in movies:
+    movie["title"] = normalize_title(str(movie["title"]))
+
+if __name__ == "__main__":
+    build_report(movies)
