@@ -86,9 +86,11 @@ else:
 def count_long_movies(movies, threshold=120):
     """Counts movies longer than a certain threshold."""
     counter = 0
+
     for movie in movies:
         if movie["duration_min"] > threshold:
             counter += 1
+
     return counter
 
 
@@ -123,16 +125,19 @@ def format_report_line(movie):
 
 
 def titles_sorted_by_rating(movies):
+    """Sorts titles by rating in descending order."""
     movies_sorted = sorted(movies, key=lambda movie: movie["rating"], reverse=True)
     return [movie["title"] for movie in movies_sorted]
 
 
 def top_n_by_rating(movies, n=3):
+    """Returns pairs (Movie, Rating) for top n movies."""
     movies_sorted = sorted(movies, key=lambda movie: movie["rating"], reverse=True)
     return [(movie["title"], movie["rating"]) for movie in movies_sorted[:n]]
 
 
 def count_by_genre(movies):
+    """Returns dict of genre counts."""
     genre_counter = {}
 
     for movie in movies:
@@ -143,6 +148,7 @@ def count_by_genre(movies):
 
 
 def actor_filmography(movies):
+    """Returns dict of actor filmography."""
     actors_filmography = {}
 
     for movie in movies:
@@ -159,6 +165,7 @@ above_average = {movie["title"]: movie["rating"]
 
 
 def all_genres(movies):
+    """Returns set of genres"""
     genres = set()
     for movie in movies:
         genres.update(movie["genres"])
@@ -166,8 +173,22 @@ def all_genres(movies):
 
 
 def common_actors(movie1, movie2):
+    """Returns set of actors common to both movies."""
     return set(movie1["actors"]) & set(movie2["actors"])
 
 
 def genres_only_in_one(movies_a, movies_b):
+    """Returns set of genres specific to movie_a."""
     return all_genres(movies_a) - all_genres(movies_b)
+
+
+def iter_high_rated(movies, min_rating=8.0):
+    """Iterates over movies with rating higher than a certain threshold."""
+    for movie in movies:
+        if movie["rating"] >= min_rating:
+            yield movie
+
+for movie in iter_high_rated(movies):
+    print(format_report_line(movie))
+
+print(sum(movie["duration_min"] for movie in iter_high_rated(movies, 7.0)))
