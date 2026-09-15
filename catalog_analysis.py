@@ -120,3 +120,13 @@ def format_report_line(movie):
     report_line += f'жанры: {genres}'
 
     return report_line
+
+
+def titles_sorted_by_rating(movies):
+    movies_sorted = sorted(movies, key=lambda movie: movie["rating"], reverse=True)
+    return [movie["title"] for movie in movies_sorted]
+
+
+def top_n_by_rating(movies, n=3):
+    movies_sorted = sorted(movies, key=lambda movie: movie["rating"], reverse=True)
+    return [(movie["title"], movie["rating"]) for movie in movies_sorted[:n]]
