@@ -39,6 +39,7 @@ def catalog_age_stats(movies, current_year=2026):
     average = m.ceil(sum(ages) / len(ages))
     return (oldest, newest, average)
 
+
 def duration_in_hours(minutes):
     """Computes the duration in hours from duration in minutes."""
     hours = minutes // 60
@@ -47,6 +48,7 @@ def duration_in_hours(minutes):
 
 
 def rating_tier(rating):
+    """Reurns label for a given rating."""
     if rating >= 9.0:
         return "шедевр"
     elif rating >= 5.0:
@@ -56,6 +58,7 @@ def rating_tier(rating):
 
 
 def decade_label(year):
+    """Returns label for a given year of production."""
     match year:
         case _ if year > 2020:
             return "новые"
@@ -63,14 +66,6 @@ def decade_label(year):
             return "недавние"
         case _ :
             return "старые"
-
-
-def count_long_movies(movies, threshold=120):
-    counter = 0
-    for movie in movies:
-        if movie["duration_min"] > threshold:
-            counter += 1
-    return counter
 
 
 for movie in movies:
@@ -88,5 +83,40 @@ else:
     print("Шедевров не найдено")
 
 
+def count_long_movies(movies, threshold=120):
+    """Counts movies longer than a certain threshold."""
+    counter = 0
+    for movie in movies:
+        if movie["duration_min"] > threshold:
+            counter += 1
+    return counter
 
 
+def normalize_title(title):
+    """Normalizes title to Title Case."""
+    title_words = title.split(" ")
+    cap_title_words = list()
+
+    for word in title_words:
+        word = word[0].upper() + word[1:]
+        cap_title_words.append(word)
+
+    return " ".join(cap_title_words)
+
+
+def make_slug(title):
+    """Makes a slug from the title."""
+    return title.lower().replace(" ", "-")
+
+
+def format_report_line(movie):
+    """Formats a report line for a movie."""
+    genres = ", ".join(movie["genres"])
+
+    report_line = f'\"{movie["title"]}\" '
+    report_line += f'({movie["year"]}) — '
+    report_line += f'{movie["rating"]}/10, '
+    report_line += f'{duration_in_hours(movie["duration_min"])}, '
+    report_line += f'жанры: {genres}'
+
+    return report_line
