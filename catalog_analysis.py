@@ -47,10 +47,10 @@ def duration_in_hours(minutes):
 
 
 def rating_tier(rating):
-    if rating >= 9:
+    if rating >= 9.0:
         return "шедевр"
-    elif rating >= 5:
-        return "хорошо" if rating >= 7 else "средне"
+    elif rating >= 5.0:
+        return "хорошо" if rating >= 7.0 else "средне"
     else:
         return "слабо"
 
@@ -65,9 +65,28 @@ def decade_label(year):
             return "старые"
 
 
-def main():
-    print("Hello from dz-catalog-analysis-putivskiy-m26-555!")
+def count_long_movies(movies, threshold=120):
+    counter = 0
+    for movie in movies:
+        if movie["duration_min"] > threshold:
+            counter += 1
+    return counter
 
 
-if __name__ == "__main__":
-    main()
+for movie in movies:
+    if "comedy" in movie["genres"]:
+        continue
+    print(movie["title"])
+
+i = 0
+while i < len(movies):
+    if movies[i]["rating"] > 9.0:
+        print(movies[i]["title"])
+        break
+    i += 1
+else:
+    print("Шедевров не найдено")
+
+
+
+
